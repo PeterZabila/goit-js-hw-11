@@ -1,2 +1,36 @@
 @import './common';
-@import './example';
+
+.container{
+    padding: 15px;
+}
+
+.info {
+    display: flex;
+}
+
+.info-item {
+    font-size: 14px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.info-item:not(:last-child) {
+    margin-right: 10px;
+}
+
+.photo-card {
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 250px;
+
+}
+
+.img {
+   object-fit: cover;
+}
+
+// SEARCH-FORM
+.search-form {
+    margin-bottom: 20px;
+}
+
+// SEARCH-FORM
