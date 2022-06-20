@@ -1,10 +1,11 @@
 import SimpleLightbox from "simplelightbox";
 import * as basicLightbox from 'basiclightbox'
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import "simplelightbox/dist/simple-lightbox.min.css";
 import "basiclightbox/dist/basicLightbox.min.css";
-
-
 import axios from 'axios';
+
+export { fetchPictures };
 
 const refs = {
   form: document.querySelector('#search-form'),
@@ -14,15 +15,18 @@ const refs = {
   searchInput: document.querySelector('.searchInput'),
 }
 
+export { refs };
+
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '28076639-0feb76057bbd5c0e620bbf417';
 let page = 1;
 
-refs.form.addEventListener('submit', fetchPictures);
+refs.loadMoreBtn.style.display = "none";
+
+  refs.form.addEventListener('submit', fetchPictures);
 
 async function fetchPictures(e) {
     e.preventDefault();
-
     try {
       const result = await axios.get(`${BASE_URL}`, {
         params: {
@@ -37,21 +41,27 @@ async function fetchPictures(e) {
 
       })     
       console.log(result);
-      
+     
         const data = await result.data.hits;
-      console.log(data);
-      
-       const markup = await createGalleryItemMarkup(data);
-       refs.gallery.insertAdjacentHTML('afterbegin', markup);
-      //  refs.loadMoreBtn.classList.toggle("hidden");
+        const markup = await createGalleryItemMarkup(data);
+        refs.gallery.insertAdjacentHTML('afterbegin', markup);
+        Notify.success('✅ Country found');
+        page += 1;
+        refs.loadMoreBtn.style.display = "block";
+    
     } catch (error) {
       console.log(error);
+      Notify.failure(`❌ Please enter existing entity `);
     } 
 }
 
 new SimpleLightbox('.gallery .gallery__item', { fadeSpeed: 500, captionDelay: 250, captionsData: "alt", scrollZoom: true, });
 
 function createGalleryItemMarkup(hits) {
+if(refs.searchInput.value === "") {
+  refs.gallery.innerHTML = "";
+}
+
   return hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
 
     return refs.gallery.innerHTML = `
@@ -76,6 +86,7 @@ function createGalleryItemMarkup(hits) {
     
   }).join("");
 };
+
 
 refs.gallery.addEventListener('click', onClickModal);
 
