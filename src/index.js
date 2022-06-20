@@ -1,9 +1,8 @@
-// import { galleryItems } from './gallery-items.js';
-// // Change code below this line
-// import SimpleLightbox from "simplelightbox";
-// import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from "simplelightbox";
+import * as basicLightbox from 'basiclightbox'
+import "simplelightbox/dist/simple-lightbox.min.css";
+import "basiclightbox/dist/basicLightbox.min.css";
 
-// const axios = require('axios').default;
 
 import axios from 'axios';
 
@@ -11,15 +10,13 @@ const refs = {
   form: document.querySelector('#search-form'),
   searchBtn: document.querySelector('#searchBtn'),
   gallery: document.querySelector('.gallery'),
-  loadMoreBtn: document.querySelector('[data-action="load-more"]')
+  loadMoreBtn: document.querySelector('[data-action="load-more"]'),
+  searchInput: document.querySelector('.searchInput'),
 }
 
-
-// const query = document.querySelector('.searchInput').value;
-// let page = 1;
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '28076639-0feb76057bbd5c0e620bbf417';
-
+let page = 1;
 
 refs.form.addEventListener('submit', fetchPictures);
 
@@ -30,10 +27,12 @@ async function fetchPictures(e) {
       const result = await axios.get(`${BASE_URL}`, {
         params: {
           key: API_KEY,
-          q: e.target.value,
+          q: refs.searchInput.value,
           image_type: "photo",
           orientation: "horizontal",
           safesearch: true,
+          per_page: 20,
+          page: page,
         }
 
       })     
@@ -50,31 +49,56 @@ async function fetchPictures(e) {
     } 
 }
 
+new SimpleLightbox('.gallery .gallery__item', { fadeSpeed: 500, captionDelay: 250, captionsData: "alt", scrollZoom: true, });
 
 function createGalleryItemMarkup(hits) {
   return hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
-    const card = document.createElement('div');
-    card.classList.add('.photo-card');
-    return card.innerHTML = `
-    <div class="img-wrapper"><img class="img" src="${largeImageURL}", alt="${tags}" /></div>
-    <div class="info">
-      <p class="info-item">
-        <b>Likes:<br>${likes}</b>
-      </p>
-      <p class="info-item">
-        <b>Likes:<br>${views}</b>
-      </p>
-      <p class="info-item">
-        <b>Likes:<br>${comments}</b>
-      </p>
-      <p class="info-item">
-        <b>Likes:<br>${downloads}</b>
-      </p>
-    </div>`;
-    
-}).join("");
 
-}
+    return refs.gallery.innerHTML = `
+    <div class="gallery__item">
+      <a class="gallery__link" href="${largeImageURL}"><img class="gallery__image" src="${webformatURL}", alt="${tags}" data-source="${largeImageURL}"/></a>
+      <div class="info">
+        <p class="info-item">
+          <b>Likes:<br>${likes}</b>
+        </p>
+        <p class="info-item">
+          <b>Views:<br>${views}</b>
+        </p>
+        <p class="info-item">
+          <b>Comments:<br>${comments}</b>
+        </p>
+        <p class="info-item">
+          <b>Downloads:<br>${downloads}</b>
+        </p>
+      </div>
+    </div>
+  `;
+    
+  }).join("");
+};
+
+refs.gallery.addEventListener('click', onClickModal);
+
+function onClickModal(e) {
+    e.preventDefault();
+    if(e.target.nodeName !== "IMG") {
+        return;
+    }
+
+   const instance = basicLightbox.create(`<img src="${e.target.dataset.source}">`,
+    { onShow: () => {window.addEventListener('keydown', onEsc) }},)
+
+    instance.show();
+
+    function onEsc(e) {
+        if (e.key === 'Escape') {
+            instance.close();
+            window.removeEventListener('keydown', onEsc);
+        }
+    }
+};
+
+
 
 
 // ====================================================
