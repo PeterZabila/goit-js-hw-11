@@ -5,7 +5,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import "basiclightbox/dist/basicLightbox.min.css";
 import axios from 'axios';
 
-export { fetchPictures };
+// export { fetchPictures };
 
 const refs = {
   form: document.querySelector('#search-form'),
@@ -16,6 +16,12 @@ const refs = {
 }
 
 export { refs };
+export { fetchPictures };
+
+
+// totalPages = math.ceil(totalHits / 40)
+//   if (photosApiService.page > totalPages)
+
 
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '28076639-0feb76057bbd5c0e620bbf417';
@@ -35,7 +41,7 @@ async function fetchPictures(e) {
           image_type: "photo",
           orientation: "horizontal",
           safesearch: true,
-          per_page: 20,
+          per_page: 4,
           page: page,
         }
 
@@ -43,7 +49,7 @@ async function fetchPictures(e) {
       console.log(result);
      
         const data = await result.data.hits;
-        const markup = await createGalleryItemMarkup(data);
+        const markup = createGalleryItemMarkup(data);
         refs.gallery.insertAdjacentHTML('afterbegin', markup);
         Notify.success('✅ Country found');
         page += 1;
@@ -55,17 +61,14 @@ async function fetchPictures(e) {
     } 
 }
 
-new SimpleLightbox('.gallery .gallery__item', { fadeSpeed: 500, captionDelay: 250, captionsData: "alt", scrollZoom: true, });
+let gallery = new SimpleLightbox('.gallery .gallery__item', { fadeSpeed: 500, captionDelay: 250, captionsData: "alt", scrollZoom: true, });
+gallery.on('show.simplelightbox', fetchPictures);
 
 function createGalleryItemMarkup(hits) {
-if(refs.searchInput.value === "") {
-  refs.gallery.innerHTML = "";
-}
+  
+  return hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads, id}) => {
 
-  return hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) => {
-
-    return refs.gallery.innerHTML = `
-    <div class="gallery__item">
+    return `<div class="gallery__item">
       <a class="gallery__link" href="${largeImageURL}"><img class="gallery__image" src="${webformatURL}", alt="${tags}" data-source="${largeImageURL}"/></a>
       <div class="info">
         <p class="info-item">
@@ -110,6 +113,10 @@ function onClickModal(e) {
 };
 
 
+function endOfPictures() {
+  refs.loadMoreBtn.style.display = "none";
+  Notify.info("We're sorry, but you've reached the end of search results");
+}
 
 
 // ====================================================
