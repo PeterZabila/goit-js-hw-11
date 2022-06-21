@@ -17,7 +17,10 @@ const refs = {
 
 export { refs };
 export { fetchPictures };
+export { fetchData };
+export { page };
 
+let fetchData;
 
 // totalPages = math.ceil(totalHits / 40)
 //   if (photosApiService.page > totalPages)
@@ -46,14 +49,20 @@ async function fetchPictures(e) {
         }
 
       })     
-      console.log(result);
+      
      
         const data = await result.data.hits;
-        const markup = createGalleryItemMarkup(data);
-        refs.gallery.insertAdjacentHTML('beforeend', markup);
+  
+        fetchData = result.data;
+        createGalleryItemMarkup(data);
+
         Notify.success('✅ Request match successfully completed');
         page += 1;
+      
         refs.loadMoreBtn.style.display = "block";
+        
+ 
+      console.log(data);
     
     } catch (error) {
       console.log(error);
@@ -65,9 +74,7 @@ let gallery = new SimpleLightbox('.gallery .gallery__item', { fadeSpeed: 500, ca
 gallery.on('show.simplelightbox', fetchPictures);
 
 function createGalleryItemMarkup(hits) {
-  
-  return hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads, id}) => {
-
+  const markup = hits.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads, id}) => {
     return `<div class="gallery__item">
       <a class="gallery__link" href="${largeImageURL}"><img class="gallery__image" src="${webformatURL}", alt="${tags}" data-source="${largeImageURL}"/></a>
       <div class="info">
@@ -88,6 +95,8 @@ function createGalleryItemMarkup(hits) {
   `;
     
   }).join("");
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
+
 };
 
 
@@ -113,10 +122,6 @@ function onClickModal(e) {
 };
 
 
-function endOfPictures() {
-  refs.loadMoreBtn.style.display = "none";
-  Notify.info("We're sorry, but you've reached the end of search results");
-}
 
 
 // ====================================================

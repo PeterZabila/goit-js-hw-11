@@ -1,6 +1,11 @@
 import { fetchPictures } from "./index";
 import { refs } from "./index";
 import { endOfPictures } from "./index";
+import { fetchData } from "./index";
+import { page } from "./index";
+
+let resultLength; 
+let totalHits;
 
 refs.loadMoreBtn.addEventListener('click', loadMore);
 
@@ -12,6 +17,14 @@ function loadMore(e) {
     // }
     fetchPictures(e);
     SmoothScroll();
+    resultLength = fetchData.hits;
+    totalHits = fetchData.totalHits;
+    const numberOfPages = Math.round(totalHits / 4);
+    console.log(page);
+    console.log(numberOfPages);
+    if (page >= numberOfPages) {
+        endOfPictures();
+    }
 }
 
 function SmoothScroll() {
@@ -22,5 +35,11 @@ function SmoothScroll() {
     window.scrollBy({
     top: cardHeight * 2,
     behavior: "smooth",
-    });
-}
+    })
+};
+
+function endOfPictures() {
+    refs.loadMoreBtn.style.display = "none";
+    Notify.info("We're sorry, but you've reached the end of search results")
+    
+  }
