@@ -50,8 +50,8 @@ async function fetchPictures(e) {
      
         const data = await result.data.hits;
         const markup = createGalleryItemMarkup(data);
-        refs.gallery.insertAdjacentHTML('afterbegin', markup);
-        Notify.success('✅ Country found');
+        refs.gallery.insertAdjacentHTML('beforeend', markup);
+        Notify.success('✅ Request match successfully completed');
         page += 1;
         refs.loadMoreBtn.style.display = "block";
     
