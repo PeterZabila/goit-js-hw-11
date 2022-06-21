@@ -5,8 +5,6 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import "basiclightbox/dist/basicLightbox.min.css";
 import axios from 'axios';
 
-// export { fetchPictures };
-
 const refs = {
   form: document.querySelector('#search-form'),
   searchBtn: document.querySelector('#searchBtn'),
@@ -21,11 +19,6 @@ export { fetchData };
 export { page };
 
 let fetchData;
-
-// totalPages = math.ceil(totalHits / 40)
-//   if (photosApiService.page > totalPages)
-
-
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '28076639-0feb76057bbd5c0e620bbf417';
 let page = 1;
@@ -36,6 +29,12 @@ refs.loadMoreBtn.style.display = "none";
 
 async function fetchPictures(e) {
     e.preventDefault();
+    if(refs.searchInput.value === "") {
+      refs.gallery.innerHTML = "";
+      page = 1;
+      return;
+    };
+  
     try {
       const result = await axios.get(`${BASE_URL}`, {
         params: {
@@ -49,20 +48,19 @@ async function fetchPictures(e) {
         }
 
       })     
-      
-     
-        const data = await result.data.hits;
-  
-        fetchData = result.data;
-        createGalleryItemMarkup(data);
 
-        Notify.success('✅ Request match successfully completed');
-        page += 1;
+      console.log(result.data.hits);
+      if(result.data.hits.length === 0) {
+        Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        return;
+      }
       
+        const data = await result.data.hits;
+
+        fetchData = result.data;
+          createGalleryItemMarkup(data);
+        page += 1;
         refs.loadMoreBtn.style.display = "block";
-        
- 
-      console.log(data);
     
     } catch (error) {
       console.log(error);
@@ -92,11 +90,9 @@ function createGalleryItemMarkup(hits) {
         </p>
       </div>
     </div>
-  `;
-    
+  `; 
   }).join("");
   refs.gallery.insertAdjacentHTML('beforeend', markup);
-
 };
 
 
