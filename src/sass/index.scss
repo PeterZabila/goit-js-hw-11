@@ -71,13 +71,11 @@ img {
 }
 
 .info {
+  margin-top: 5px;
   padding: 0;
-
   display: flex;
   justify-content: space-around;
-    position: relative;
-
-    // background-color: rgb(210, 210, 210, 0.4);
+  position: relative;
 }
 
 .info-item {
@@ -85,19 +83,17 @@ img {
     font-size: 10px;
     line-height: 1.12;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    // &:not(:last-child) {
-    //     margin-right: 10px;
-    // }
 }
 
 // SEARCH-FORM
 .search-form {
+  display: flex;
     margin-bottom: 20px;
-   position: relative;
-   left: 40%;
-
-
+    position: relative;
+    left: 40%;
+    width: 300px;
 }
+
 
 // SEARCH-FORM
 
@@ -107,4 +103,3 @@ img {
   left: 45%;
   top: 50px;
 }
-

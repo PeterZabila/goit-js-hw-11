@@ -26,12 +26,19 @@ let page = 1;
 refs.loadMoreBtn.style.display = "none";
 
   refs.form.addEventListener('submit', fetchPictures);
+  refs.searchInput.addEventListener('input', onInput);
+
+  function onInput() {
+    refs.gallery.innerHTML = "";
+    refs.loadMoreBtn.style.display = "none";
+  }
 
 async function fetchPictures(e) {
     e.preventDefault();
     if(refs.searchInput.value === "") {
       refs.gallery.innerHTML = "";
       page = 1;
+      refs.loadMoreBtn.style.display = "none";
       return;
     };
   
