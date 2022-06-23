@@ -13,15 +13,16 @@ const refs = {
   searchInput: document.querySelector('.searchInput'),
 }
 
-export { refs };
-export { fetchPictures };
-export { fetchData };
-export { page };
+  export { refs };
+  export { fetchPictures };
+  export { fetchData };
+  export { page };
 
 let fetchData;
   const BASE_URL = 'https://pixabay.com/api/';
   const API_KEY = '28076639-0feb76057bbd5c0e620bbf417';
 let page = 1;
+
 
 refs.loadMoreBtn.style.display = "none";
 
@@ -125,8 +126,6 @@ function onClickModal(e) {
 };
 
 
-
-
 // ====================================================
 
 // import { searchImages } from 'pixabay-api';
@@ -138,7 +137,6 @@ function onClickModal(e) {
 //   console.log(pictures);
 // }
 
-// refs.searchBtn.addEventListener('click', fetchSearch)
 
 // ====================================================
 
