@@ -19,8 +19,8 @@ export { fetchData };
 export { page };
 
 let fetchData;
-const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '28076639-0feb76057bbd5c0e620bbf417';
+  const BASE_URL = 'https://pixabay.com/api/';
+  const API_KEY = '28076639-0feb76057bbd5c0e620bbf417';
 let page = 1;
 
 refs.loadMoreBtn.style.display = "none";
@@ -30,7 +30,7 @@ refs.loadMoreBtn.style.display = "none";
 
   function onInput() {
     refs.gallery.innerHTML = "";
-    refs.loadMoreBtn.style.display = "none";
+    refs.loadMoreBtn.style.display = "none"; 
   }
 
 async function fetchPictures(e) {
